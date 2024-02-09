@@ -225,6 +225,7 @@ const CityVehicleSelection = ({ cities, vehicles }) => {
                 marginInline: "auto",
                 display: "inherit",
               }}
+              alt="Cop1 image"
             />
           </Box>
         </Box>
@@ -309,6 +310,7 @@ const CityVehicleSelection = ({ cities, vehicles }) => {
                 marginInline: "auto",
                 display: "inherit",
               }}
+              alt="Cop2 image"
             />
           </Box>
         </Box>
@@ -393,6 +395,7 @@ const CityVehicleSelection = ({ cities, vehicles }) => {
                 marginInline: "auto",
                 display: "inherit",
               }}
+              alt="Cop3 image"
             />
           </Box>
         </Box>

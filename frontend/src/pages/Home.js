@@ -56,7 +56,7 @@ const Home = () => {
     };
 
     fetchData();
-  }, []);
+  }, [userId]);
 
   return (
     <Box p={{ xs: 1, sm: 3 }}>

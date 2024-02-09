@@ -1,0 +1,49 @@
+{
+  "cities": [
+    {
+      "id": "c1",
+      "name": "Yapkashnagar",
+      "distance": 60
+    },
+    {
+      "id": "c2",
+      "name": "Lihaspur",
+      "distance": 50
+    },
+    {
+      "id": "c3",
+      "name": "Narmis City",
+      "distance": 40
+    },
+    {
+      "id": "c4",
+      "name": "Shekharvati",
+      "distance": 30
+    },
+    {
+      "id": "c5",
+      "name": "Nuravgram",
+      "distance": 20
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "v1",
+      "kind": "EV Bike",
+      "range": 60,
+      "count": 2
+    },
+    {
+      "id": "v2",
+      "kind": "EV Car",
+      "range": 100,
+      "count": 1
+    },
+    {
+      "id": "v3",
+      "kind": "EV SUV",
+      "range": 120,
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+class HttpError extends Error {
+  constructor(message, errorCode) {
+    super(message);
+    this.code = errorCode;
+  }
+}
+
+const errorHandler = (err, req, res, next) => {
+  res.status(err.code).json({
+    success: false,
+    message: err.message,
+    status: err.code,
+  });
+};
+
+const notFound = (req, res, next) => {
+  const error = new HttpError(`${req.originalUrl} Not found`, 404);
+  res.status(404);
+  next(error);
+};
+
+export { HttpError, errorHandler, notFound };

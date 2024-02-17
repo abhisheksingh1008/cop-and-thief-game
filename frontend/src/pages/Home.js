@@ -73,7 +73,8 @@ const Home = () => {
             <Typography>{error}</Typography>
           </Box>
         ) : (
-          <Form cities={cities} vehicles={vehicles} />
+          cities.length > 0 &&
+          vehicles.length > 0 && <Form cities={cities} vehicles={vehicles} />
         )}
       </Paper>
     </Box>

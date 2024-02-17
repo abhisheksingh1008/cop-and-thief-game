@@ -13,12 +13,12 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { useAppContext } from "../store/ContextProvider";
-import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
 import Cop1Image from "../assets/cop1.png";
 import Cop2Image from "../assets/cop2.png";
 import Cop3Image from "../assets/cop3.png";
+import { useAppContext } from "../store/ContextProvider";
 
 const CityVehicleSelection = ({ cities, vehicles }) => {
   const { userId, setGameResult } = useAppContext();
@@ -70,73 +70,6 @@ const CityVehicleSelection = ({ cities, vehicles }) => {
     }
   };
 
-  const filterAvailableVehicles = (cop) => {
-    const selectedCity = (() => {
-      switch (cop) {
-        case "cop1":
-          return cop1City;
-        case "cop2":
-          return cop2City;
-        case "cop3":
-          return cop3City;
-        default:
-          return null;
-      }
-    })();
-
-    if (!selectedCity) return [];
-
-    return vehicles.filter(
-      (vehicle) =>
-        vehicle.count > 0 && vehicle.range >= selectedCity.distance * 2
-    );
-  };
-
-  const filterSelectedCities = (cop) => {
-    switch (cop) {
-      case "cop1":
-        return [cop2City, cop3City].filter((city) => city !== "");
-      case "cop2":
-        return [cop1City, cop3City].filter((city) => city !== "");
-      case "cop3":
-        return [cop1City, cop2City].filter((city) => city !== "");
-      default:
-        return [];
-    }
-  };
-
-  const filterSelectedVehicles = (cop) => {
-    switch (cop) {
-      case "cop1":
-        return [cop2Vehicle, cop3Vehicle].filter((vehicle) => vehicle !== "");
-      case "cop2":
-        return [cop1Vehicle, cop3Vehicle].filter((vehicle) => vehicle !== "");
-      case "cop3":
-        return [cop1Vehicle, cop2Vehicle].filter((vehicle) => vehicle !== "");
-      default:
-        return [];
-    }
-  };
-
-  const updateVehicleCount = (cop, vehicle) => {
-    const updatedVehicles = vehicles.map((v) =>
-      v.id === vehicle.id ? { ...v, count: v.count - 1 } : v
-    );
-    switch (cop) {
-      case "cop1":
-        setCop1Vehicle(vehicle);
-        break;
-      case "cop2":
-        setCop2Vehicle(vehicle);
-        break;
-      case "cop3":
-        setCop3Vehicle(vehicle);
-        break;
-      default:
-        break;
-    }
-  };
-
   const formResetHandler = () => {
     setCop1City("");
     setCop2City("");
@@ -151,7 +84,7 @@ const CityVehicleSelection = ({ cities, vehicles }) => {
     setLoading(true);
 
     await axios
-      .post("/api/game//find-thief", {
+      .post("/api/game/find-thief", {
         userId,
         cops: {
           cop1: {
@@ -246,15 +179,12 @@ const CityVehicleSelection = ({ cities, vehicles }) => {
               label="City"
               labelId="city"
               id="city-select"
-              value={cop1City.id}
+              value={cop1City?.id}
               onChange={(e) => handleCityChange("cop1", e)}
             >
               {cities
                 .filter(
-                  (city) =>
-                    !filterSelectedCities("cop1").find(
-                      (selectedCity) => selectedCity.id === city.id
-                    )
+                  (city) => city.id !== cop2City?.id && city.id !== cop3City?.id
                 )
                 .map((city) => (
                   <MenuItem key={city.id} value={city.id}>
@@ -270,20 +200,21 @@ const CityVehicleSelection = ({ cities, vehicles }) => {
                 label="Vehicle"
                 labelId="vehicle"
                 id="vehicle-select"
-                value={cop1Vehicle.id}
+                value={cop1Vehicle?.id}
                 onChange={(e) => {
                   handleVehicleChange("cop1", e);
-                  updateVehicleCount(
-                    "cop1",
-                    vehicles.find((vehicle) => vehicle.id === e.target.value)
-                  );
                 }}
               >
-                {filterAvailableVehicles("cop1")
-                  .filter(
-                    (vehicle) =>
-                      !filterSelectedVehicles("cop1").includes(vehicle)
-                  )
+                {vehicles
+                  .filter((vehicle) => {
+                    let count = 0;
+                    if (cop2Vehicle?.id === vehicle.id) count++;
+                    if (cop3Vehicle?.id === vehicle.id) count++;
+                    return (
+                      vehicle.range >= cop1City.distance * 2 &&
+                      vehicle.count > count
+                    );
+                  })
                   .map((vehicle) => (
                     <MenuItem key={vehicle.id} value={vehicle.id}>
                       {vehicle.kind} - {vehicle.range}KM
@@ -331,15 +262,12 @@ const CityVehicleSelection = ({ cities, vehicles }) => {
               label="City"
               labelId="city"
               id="city-select"
-              value={cop2City.id}
+              value={cop2City?.id}
               onChange={(e) => handleCityChange("cop2", e)}
             >
               {cities
                 .filter(
-                  (city) =>
-                    !filterSelectedCities("cop2").find(
-                      (selectedCity) => selectedCity.id === city.id
-                    )
+                  (city) => city.id !== cop1City?.id && city.id !== cop3City?.id
                 )
                 .map((city) => (
                   <MenuItem key={city.id} value={city.id}>
@@ -355,20 +283,21 @@ const CityVehicleSelection = ({ cities, vehicles }) => {
                 label="Vehicle"
                 labelId="vehicle"
                 id="vehicle-select"
-                value={cop2Vehicle.id}
+                value={cop2Vehicle?.id}
                 onChange={(e) => {
                   handleVehicleChange("cop2", e);
-                  updateVehicleCount(
-                    "cop2",
-                    vehicles.find((vehicle) => vehicle.id === e.target.value)
-                  );
                 }}
               >
-                {filterAvailableVehicles("cop2")
-                  .filter(
-                    (vehicle) =>
-                      !filterSelectedVehicles("cop2").includes(vehicle)
-                  )
+                {vehicles
+                  .filter((vehicle) => {
+                    let count = 0;
+                    if (cop1Vehicle?.id === vehicle.id) count++;
+                    if (cop3Vehicle?.id === vehicle.id) count++;
+                    return (
+                      vehicle.range >= cop2City.distance * 2 &&
+                      vehicle.count > count
+                    );
+                  })
                   .map((vehicle) => (
                     <MenuItem key={vehicle.id} value={vehicle.id}>
                       {vehicle.kind} - {vehicle.range}KM
@@ -416,15 +345,12 @@ const CityVehicleSelection = ({ cities, vehicles }) => {
               label="City"
               labelId="city"
               id="city-select"
-              value={cop3City.id}
+              value={cop3City?.id}
               onChange={(e) => handleCityChange("cop3", e)}
             >
               {cities
                 .filter(
-                  (city) =>
-                    !filterSelectedCities("cop3").find(
-                      (selectedCity) => selectedCity.id === city.id
-                    )
+                  (city) => city.id !== cop1City?.id && city.id !== cop2City?.id
                 )
                 .map((city) => (
                   <MenuItem key={city.id} value={city.id}>
@@ -440,20 +366,21 @@ const CityVehicleSelection = ({ cities, vehicles }) => {
                 label="Vehicle"
                 labelId="vehicle"
                 id="vehicle-select"
-                value={cop3Vehicle.id}
+                value={cop3Vehicle?.id}
                 onChange={(e) => {
                   handleVehicleChange("cop3", e);
-                  updateVehicleCount(
-                    "cop3",
-                    vehicles.find((vehicle) => vehicle.id === e.target.value)
-                  );
                 }}
               >
-                {filterAvailableVehicles("cop3")
-                  .filter(
-                    (vehicle) =>
-                      !filterSelectedVehicles("cop3").includes(vehicle)
-                  )
+                {vehicles
+                  .filter((vehicle) => {
+                    let count = 0;
+                    if (cop1Vehicle?.id === vehicle.id) count++;
+                    if (cop2Vehicle?.id === vehicle.id) count++;
+                    return (
+                      vehicle.range >= cop3City.distance * 2 &&
+                      vehicle.count > count
+                    );
+                  })
                   .map((vehicle) => (
                     <MenuItem key={vehicle.id} value={vehicle.id}>
                       {vehicle.kind} - {vehicle.range}KM
